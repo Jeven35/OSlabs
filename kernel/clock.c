@@ -1,8 +1,10 @@
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                               clock.c
+                               修改 clock.c
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                                                    Forrest Yu, 2005
+代码回到第六章，使主进程和副进程能够同时进行
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                                                    Jeven, 2018
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 #include "type.h"
@@ -21,18 +23,30 @@
  *======================================================================*/
 PUBLIC void clock_handler(int irq)
 {
-	ticks++;
-	p_proc_ready->ticks--;
+	// ticks++;
+	// p_proc_ready->ticks--;
 
-	if (k_reenter != 0) {
-		return;
-	}
+	// if (k_reenter != 0) {
+	// 	return;
+	// }
 
-	if (p_proc_ready->ticks > 0) {
-		return;
-	}
+	// if (p_proc_ready->ticks > 0) {
+	// 	return;
+	// }
 
-	schedule();
+	// schedule();
+
+  //用了第6章的代码
+  ticks++;
+  
+  if (k_reenter != 0) {
+    return;
+  }
+  
+  p_proc_ready++;
+  if(p_proc_ready>=proc_table+NR_TASKS){
+    p_proc_ready=proc_table;   
+  }
 
 }
 
