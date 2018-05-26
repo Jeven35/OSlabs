@@ -36,7 +36,7 @@ PUBLIC void clock_handler(int irq)
 
 	// schedule();
 
-  //用了第6章的代码
+  // 下面这几行代码，使得程序可以运行在不同特权级之上，普通的用户进程和系统任务区分开来，可以同时运行。
   ticks++;
   
   if (k_reenter != 0) {
@@ -48,7 +48,6 @@ PUBLIC void clock_handler(int irq)
     p_proc_ready=proc_table;   
   }
 
-}
 
 /*======================================================================*
                               milli_delay

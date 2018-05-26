@@ -35,6 +35,6 @@ extern	irq_handler	irq_table[];
 extern	TTY		tty_table[];
 extern  CONSOLE         console_table[];
 
-// 新增全局变量
-extern int find_mode;
+// 新增查找模式
+EXTERN int esc_mode;
 
