@@ -33,6 +33,7 @@ PRIVATE void flush(CONSOLE* p_con);
  *======================================================================*/
 PUBLIC void init_screen(TTY* p_tty)
 {
+	esc_mode = 0;
 	int nr_tty = p_tty - tty_table;
 	p_tty->p_console = console_table + nr_tty;
 
@@ -93,21 +94,35 @@ PUBLIC void out_char(CONSOLE* p_con, char ch)
 	u8* p_vmem = (u8*)(V_MEM_BASE + p_con->cursor * 2);
 
 	switch(ch) {
+	//回车键
 	case '\n':
 		if (p_con->cursor < p_con->original_addr +
 		    p_con->v_mem_limit - SCREEN_WIDTH) {
-			p_con->cursor = p_con->original_addr + SCREEN_WIDTH * 
+
+			while(p_con->cursor<= p_con->original_addr + SCREEN_WIDTH * 
 				((p_con->cursor - p_con->original_addr) /
-				 SCREEN_WIDTH + 1);
-		}
+				 SCREEN_WIDTH + 1){
+				 	*p_vmem++ = '\0';
+        			*p_vmem++ = DEFAULT_CHAR_COLOR;
+        			p_con->cursor ++;
+			}
+
+		// 	p_con->cursor = p_con->original_addr + SCREEN_WIDTH * 
+		// 		((p_con->cursor - p_con->original_addr) /
+		// 		 SCREEN_WIDTH + 1);
+		// }
 		break;
+	// 退格键
 	case '\b':
 		if (p_con->cursor > p_con->original_addr) {
-			p_con->cursor--;
+			while(*(p_vmem-2) == '\0'){
+				p_con->cursor--;
 			*(p_vmem-2) = ' ';
 			*(p_vmem-1) = DEFAULT_CHAR_COLOR;
+			}
 		}
 		break;
+	//其他键位
 	default:
 		if (p_con->cursor <
 		    p_con->original_addr + p_con->v_mem_limit - 1) {
